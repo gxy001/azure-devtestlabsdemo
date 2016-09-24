@@ -56,7 +56,7 @@
     "webSrvPublicIP": "[concat('CONTOSO', 'websrvpip')]",
     "webSrvAvailabilitySetName": "[concat('CONTOSO', 'webSrvAS')]",
     "webSrvNumbOfInstances": "[parameters('numberOfWebSrvs')]",
-    "webSrvDnsNameforLBIP": "[concat(toLower(variables('webSrvName')), 'lb')]",
+    "webSrvDnsNameforLBIP": "[concat(toLower(resourceGroup().name),'lb')]",
     "webLbName": "[concat(variables('webSrvName'), 'lb')]",
     "webLblbID": "[resourceId('Microsoft.Network/loadBalancers',variables('webLbName'))]",
     "webLblb_PIP_Id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('webSrvPublicIP'))]",
