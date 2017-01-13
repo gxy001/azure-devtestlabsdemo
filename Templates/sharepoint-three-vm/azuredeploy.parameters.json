@@ -39,13 +39,13 @@
             "value": "GEN-UNIQUE"
         },
          "adVMSize": {
-            "value": "Standard_DS1"
+            "value": "Standard_DS1_v2"
         },
         "sqlVMSize": {
-            "value": "Standard_DS3"
+            "value": "Standard_DS3_v2"
         },
         "spVMSize": {
-            "value": "Standard_DS3"
+            "value": "Standard_DS3_v2"
         }
     }
 }
