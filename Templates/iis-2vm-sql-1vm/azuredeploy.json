@@ -24,13 +24,31 @@
         2
       ],
       "defaultValue": 1
+    },
+    "uniquePrefix":{
+      "type": "string",
+      "metadata": {
+        "description": "Prefix for uniqueness"
+      }
+    },
+    "_artifactsLocation": {
+      "type": "string",
+      "metadata": {
+        "description": "The base URI where artifacts required by this template are located."
+      }
+    },
+    "_artifactsLocationSasToken": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The sasToken required to access _artifactsLocation.  When the template is deployed using the accompanying scripts, a sasToken will be automatically generated."
+      }
     }
   },
   "variables": {
     "apiVersion": "2015-06-15",
     "storageName": "[concat('fab', 'stg', uniqueString(resourceGroup().id))]",
     "vhdContainer": "vhds",
-    "virtualNetworkName": "[concat('CONTOSO', 'Vnet')]",
+    "virtualNetworkName": "[concat(parameters('uniquePrefix'), 'Vnet')]",
     "addressPrefix": "10.0.0.0/16",
     "feSubnetPrefix": "10.0.0.0/24",
     "dbSubnetPrefix": "10.0.2.0/24",
@@ -38,15 +56,15 @@
     "dbNSGName": "dbNsg",
     "sqlSrvDBName": "[concat('fab', 'sqlSrv14')]",
     "sqlVmSize": "['Standard_DS3_v2']",
-    "sqlSrvDBOsDiskName": "[concat('CONTOSO', 'DBSrvOS')]",
-    "sqlSrvDBDataDiskName": "[concat('CONTOSO', 'DBSrvData')]",
+    "sqlSrvDBOsDiskName": "[concat('db',parameters('uniquePrefix'), 'DBSrvOS')]",
+    "sqlSrvDBDataDiskName": "[concat('db',parameters('uniquePrefix'), 'DBSrvData')]",
     "vnetId": "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworkName'))]",
-    "sqlSrvDBNicName": "[concat(variables('sqlSrvDBName'), 'Nic')]",
+    "sqlSrvDBNicName": "[concat('db',variables('sqlSrvDBName'), 'Nic')]",
     "sqlSvrDBSubnetRef": "[concat(variables('vnetId'), '/subnets/', 'DBSubnetName')]",
-    "sqlPublicIP": "[concat('fab', 'SqlPip')]",
+    "sqlPublicIP": "[concat('db', 'SqlPip')]",
     "sqlPublicIPRef": "[resourceId('Microsoft.Network/publicIPAddresses', variables('sqlPublicIP'))]",
     "sqlImagePublisher": "MicrosoftSQLServer",
-    "sqlImageOffer": "SQL2014-WS2012R2",
+    "sqlImageOffer": "SQL2014SP2-WS2012R2",
     "sqlImageSku": "Standard",
     "webSrvName": "[concat('fab', 'webSrv')]",
     "webSrvVMSize": "['Standard_DS2_v2']",
@@ -54,7 +72,7 @@
     "webSrvNicName": "[concat(variables('webSrvName'), 'Nic')]",
     "webSrvSubnetRef": "[concat(variables('vnetId'), '/subnets/', 'FESubnetName')]",
     "webSrvPublicIP": "[concat('fab', 'websrvpip')]",
-    "webSrvAvailabilitySetName": "[concat('fab', 'webSrvAS')]",
+    "webSrvAvailabilitySetName": "[concat('fe', 'webSrvAS')]",
     "webSrvNumbOfInstances": "[parameters('numberOfWebSrvs')]",
     "webSrvDnsNameforLBIP": "[concat(toLower(resourceGroup().name),'lb')]",
     "webLbName": "[concat(variables('webSrvName'), 'lb')]",
@@ -65,7 +83,7 @@
     "lbPoolID": "[concat(variables('webLbId'),'/backendAddressPools/BackendPool1')]",
     "lbProbeID": "[concat(variables('webLbId'),'/probes/tcpProbe')]",
     "vmExtensionName": "dscExtension",
-    "modulesUrl": "https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/iis-2vm-sql-1vm/scripts/WebServerConfig.ps1.zip",
+    "modulesUrl":"[concat(parameters('_artifactsLocation'),'/scripts/WebServerConfig.ps1.zip',parameters('_artifactsLocationSasToken'))]",    
     "configurationFunction": "WebServerConfig.ps1\\WebServerConfig"
   },
   "resources": [
@@ -274,7 +292,7 @@
       }
     },
     {
-      "name": "[concat('CONTOSO', 'sqlSrv14')]",
+      "name": "[concat('be', 'sqlSrv14')]",
       "type": "Microsoft.Compute/virtualMachines",
       "location": "[resourceGroup().location]",
       "apiVersion": "[variables('apiVersion')]",
